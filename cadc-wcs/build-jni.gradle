@@ -28,6 +28,7 @@ dependencies {
 def tmpBuildDir = 'build/tmp'
 def baseHeadersDir = "${Jvm.current().javaHome}/include"
 def os = System.getProperty("os.name").toLowerCase()
+def architecture = System.getProperty("os.arch").toLowerCase()
 
 test {
     systemProperty "java.library.path", "/usr/local/lib:/usr/lib:/usr/lib64:/opt/homebrew/lib:" + System.getProperty("java.io.tmpdir")
@@ -45,6 +46,10 @@ def getSOFileLocation() {
 
     if (!soFile.exists()) {
         soFile = file('/usr/lib/x86_64-linux-gnu/libwcs.so')
+    }
+
+    if (!soFile.exists()) {
+        soFile = file('/usr/lib/aarch64-linux-gnu/libwcs.so')
     }
 
     if (!soFile.exists()) {
@@ -105,9 +110,11 @@ model {
                             '-std=c99',
                             '-pedantic',
                             '-Wall',
-                            '-Dx86_linux',
                             '-D_POSIX_C_SOURCE=2',
                             '-D_FILE_OFFSET_BITS=64'
+                    if (architecture == 'amd64' || architecture == 'x86_64') {
+                        cCompiler.args '-Dx86_linux'
+                    }
                 }
             }
         }

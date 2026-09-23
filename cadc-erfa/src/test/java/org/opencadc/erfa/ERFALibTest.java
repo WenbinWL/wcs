@@ -92,6 +92,14 @@ public class ERFALibTest {
     }
 
     @Test
+    public void testNormalizeArchitecture() {
+        Assert.assertEquals("aarch64", NativeUtil.normalizeArchitecture("aarch64"));
+        Assert.assertEquals("aarch64", NativeUtil.normalizeArchitecture("arm64"));
+        Assert.assertEquals("x86_64", NativeUtil.normalizeArchitecture("x86_64"));
+        Assert.assertEquals("x86_64", NativeUtil.normalizeArchitecture("amd64"));
+    }
+
+    @Test
     public void tt2utcRoundTripTest() {
         try {
             double tt1 = 2453750.5;

@@ -100,16 +100,39 @@ public class NativeUtil {
 
     static void loadJNI(ClassLoader cl, String name)
         throws NativeInitializationException {
+        String architecture = normalizeArchitecture(System.getProperty("os.arch"));
+        String[] resourceNames = {
+            name + "." + architecture + extension,
+            name + extension
+        };
+        NativeInitializationException failure = null;
+
+        for (String resourceName : resourceNames) {
+            try {
+                loadResource(cl, name, resourceName);
+                return;
+            } catch (NativeInitializationException ex) {
+                log.debug("failed to load JNI resource: " + resourceName, ex);
+                failure = ex;
+            }
+        }
+
+        throw new NativeInitializationException(
+            "failed to load shared lib for architecture " + architecture + ": " + name,
+            failure);
+    }
+
+    private static void loadResource(ClassLoader cl, String name, String resourceName)
+        throws NativeInitializationException {
         final UUID uuid = UUID.randomUUID();
         File tmpdir = new File(System.getProperty("java.io.tmpdir"));
         File tmp = new File(tmpdir, name + "-" + uuid + extension);
 
         try {
-            String soname = name + extension;
-            URL url = cl.getResource(soname);
+            URL url = cl.getResource(resourceName);
 
             if (url == null) {
-                throw new NativeInitializationException("not found via ClassLoader: " + soname);
+                throw new NativeInitializationException("not found via ClassLoader: " + resourceName);
             }
 
             log.debug("found: " + url);
@@ -146,5 +169,16 @@ public class NativeUtil {
             log.error("failed to load shared library: " + tmp);
             throw new NativeInitializationException("failed to load shared lib: " + name, e);
         }
+    }
+
+    static String normalizeArchitecture(String architecture) {
+        String value = architecture.toLowerCase();
+        if ("arm64".equals(value)) {
+            return "aarch64";
+        }
+        if ("amd64".equals(value)) {
+            return "x86_64";
+        }
+        return value;
     }
 }

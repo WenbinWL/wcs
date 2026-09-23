@@ -13,6 +13,11 @@ against that version of `WCSLib`, copy the `libwcsLibJNI.so` to `src/main/resour
 it to the array in `WCSLib.java`.  To remove support, delete the `src/main/resources/libwcsLibJNI.<version>.so` file from
 both the `src/main/resources` directory and the `WCSLib.java` file.
 
+Linux architecture-specific JNI libraries use the filename
+`libwcsLibJNI.<version>.<architecture>.so`, where the architecture is the normalized Java architecture name
+(`aarch64` or `x86_64`). The loader tries this name first and then falls back to the legacy filename above.
+The included `libwcsLibJNI.8.aarch64.so` was built on Ubuntu 24.04 arm64 against WCSLib 8.2.2.
+
 The src tree now contains a build of libwcsLibJNI.7.dylib for MacOS. This is expected to be useful to make life easier for
 developers working on code that uses this library and is compatible with MacOS versions 11.x, 12.x, and 13.x. If a 10.x version
 of the library is required, the library can be rebuilt following `With JNI changes` below. The new library,

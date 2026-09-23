@@ -12,6 +12,10 @@ The JNI binary is linked against `ERFA` version 2.0.0. The `src/main/resources` 
 To add support for a different version, build against that version of `ERFA`, and copy the `liberfaLibJNI.so` 
 to `src/main/resources/`.
 
+Linux architecture-specific JNI libraries use the filename `liberfaLibJNI.<architecture>.so`, where the architecture
+is the normalized Java architecture name (`aarch64` or `x86_64`). The loader tries this name first and then falls back
+to the legacy filename above. The included `liberfaLibJNI.aarch64.so` was built on Ubuntu 24.04 arm64 against ERFA 2.0.1.
+
 The src tree now contains a build of `liberfaLibJNI.dylib` for MacOS. This is expected to be useful to make life easier for
 developers working on code that uses this library and and is compatible with MacOS versions 11.x, 12.x, and 13.x. 
 If a 10.x version of the library is required, the library can be rebuilt following `With JNI changes` below. 
