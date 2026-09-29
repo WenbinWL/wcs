@@ -85,13 +85,7 @@ import org.apache.log4j.Logger;
  */
 final class WCSLib {
     private static final Logger LOGGER = Logger.getLogger(WCSLib.class);
-    private static final String JNI_SO_PREFIX = "libwcsLibJNI";
-    private static final String[] JNI_FILES = new String[] { 
-        JNI_SO_PREFIX + ".8",
-        JNI_SO_PREFIX + ".7",
-        JNI_SO_PREFIX + ".6",
-        JNI_SO_PREFIX + ".5"
-    };
+    private static final String JNI_FILE = "libwcsLibJNI.8";
 
     static {
         LOGGER.info("Loaded WCSLib major version " + WCSLib.loadNativeLibrary());
@@ -105,29 +99,22 @@ final class WCSLib {
     protected static double UNDEFINED = 987654321.0e99;
 
     /**
-     * Load and return the located version.
+     * Load the WCSLib 8 JNI binding.
      *
      * @return The JNI file that was successfully loaded.
-     * @throws WCSLibInitializationException If none found.
+     * @throws WCSLibInitializationException If the binding cannot be loaded.
      */
     private static String loadNativeLibrary() throws WCSLibInitializationException {
         final ClassLoader classLoader = WCSLib.class.getClassLoader();
-        for (final String libraryFile : JNI_FILES) {
-            try {
-                LOGGER.info("Checking library file " + libraryFile);
-                NativeUtil.loadJNI(classLoader, libraryFile);
-
-                // Found one that is valid.
-                LOGGER.info("Checking library file " + libraryFile + ": OK");
-
-                return libraryFile;
-            } catch (NativeInitializationException ex) {
-                LOGGER.info("Checking library file " + libraryFile + ": FAIL");
-                // Check next version.
-            }
+        try {
+            LOGGER.info("Checking library file " + JNI_FILE);
+            NativeUtil.loadJNI(classLoader, JNI_FILE);
+            LOGGER.info("Checking library file " + JNI_FILE + ": OK");
+            return JNI_FILE;
+        } catch (NativeInitializationException ex) {
+            LOGGER.info("Checking library file " + JNI_FILE + ": FAIL");
+            throw new WCSLibInitializationException("failed to load " + JNI_FILE, -1, ex);
         }
-
-        throw new WCSLibInitializationException("failed to find a valid file beginning with " + JNI_SO_PREFIX, -1);
     }
 
     /**
