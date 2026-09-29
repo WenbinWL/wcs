@@ -99,25 +99,8 @@ public class NativeUtil {
 
     static void loadJNI(ClassLoader cl, String name) throws NativeInitializationException {
         String architecture = normalizeArchitecture(System.getProperty("os.arch"));
-        String[] resourceNames = {
-            name + "." + architecture + extension,
-            name + extension
-        };
-        NativeInitializationException failure = null;
-
-        for (String resourceName : resourceNames) {
-            try {
-                loadResource(cl, name, resourceName);
-                return;
-            } catch (NativeInitializationException ex) {
-                log.debug("failed to load JNI resource: " + resourceName, ex);
-                failure = ex;
-            }
-        }
-
-        throw new NativeInitializationException(
-            "failed to load shared lib for architecture " + architecture + ": " + name,
-            failure);
+        String resourceName = name + "." + architecture + extension;
+        loadResource(cl, name, resourceName);
     }
 
     private static void loadResource(ClassLoader cl, String name, String resourceName)
@@ -165,7 +148,7 @@ public class NativeUtil {
             throw new NativeInitializationException("failed to create temporary file: " + tmp.getAbsolutePath(), ex);
         } catch (Error e) {
             log.error("failed to load shared library: " + tmp);
-            throw new NativeInitializationException("failed to load shared lib: " + name, e);
+            throw new NativeInitializationException("failed to load shared lib: " + resourceName, e);
         }
     }
 

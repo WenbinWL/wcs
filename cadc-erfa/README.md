@@ -9,21 +9,22 @@ The JNI binding library is compiled and included inside the `cadc-erfa` JAR file
 ## Supported ERFA versions
 
 The JNI binary is linked against `ERFA` version 2.0.0. The `src/main/resources` directory includes the JNI linked library.
-To add support for a different version, build against that version of `ERFA`, and copy the `liberfaLibJNI.so` 
-to `src/main/resources/`.
+To add support for a different version, build against that version of `ERFA`, and copy the JNI library to
+`src/main/resources/liberfaLibJNI.<architecture>.<extension>`.
 
-Linux architecture-specific JNI libraries use the filename `liberfaLibJNI.<architecture>.so`, where the architecture
-is the normalized Java architecture name (`aarch64` or `x86_64`). The loader tries this name first and then falls back
-to the legacy filename above. The included `liberfaLibJNI.aarch64.so` was built on Ubuntu 24.04 arm64 against ERFA 2.0.1.
+JNI libraries use the filename `liberfaLibJNI.<architecture>.<extension>`, where the architecture is the normalized Java
+architecture name (`aarch64` or `x86_64`) and the extension identifies the operating system (`so` on Linux and `dylib` on
+macOS). The loader selects only the resource matching the current operating system and architecture. The included
+`liberfaLibJNI.aarch64.so` was built on Ubuntu 24.04 arm64 against ERFA 2.0.1.
 
-The src tree now contains a build of `liberfaLibJNI.dylib` for MacOS. This is expected to be useful to make life easier for
+The src tree contains a macOS arm64 build. This is expected to make life easier for
 developers working on code that uses this library and and is compatible with MacOS versions 11.x, 12.x, and 13.x. 
 If a 10.x version of the library is required, the library can be rebuilt following `With JNI changes` below. 
 The new library, in `build/libs/erfaLibJNI/shared/` should be copied into `src/main/resources` to be included in the jar file.
 
-The MacOS JNI library uses a hardcoded path to the locally installed ERFA C library. The included JNI library was built
-using a `homebrew` install of the ERFA C library in `/usr/local/opt/`. If the local ERFA C library uses a different path,
-the JNI library can be rebuilt using `With JNI changes` below.
+The macOS JNI library uses a hardcoded path to the locally installed ERFA C library. The included aarch64 library uses
+`/opt/homebrew/lib/`. If the local ERFA C library uses a different path, the JNI library can be rebuilt using
+`With JNI changes` below.
 
 
 
