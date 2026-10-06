@@ -3,8 +3,8 @@
 The `cadc-erfa` library is the java interface to `ERFA (Essential Routines for Fundamental Astronomy)` 
 (https://github.com/liberfa/erfa).
 
-This library can be built on its own but testing and beyond requires `liberfa`, the ERFA C library. 
-The JNI binding library is compiled and included inside the `cadc-erfa` JAR file and deployed during class loading.
+The JNI binding and its ERFA shared-library dependency are included inside the `cadc-erfa` JAR file for Linux and
+deployed during class loading. On macOS, ERFA must be installed separately.
 
 ## Supported ERFA versions
 
@@ -36,11 +36,14 @@ JDK 1.8 (or higher) is required.  The Gradle Wrapper is provided.
 
 ### No JNI changes
 
-To use `cadc-erfa`, the `ERFA` C library is required.  If it is not installed, skip running the unit tests using the `-x test` option:
+On Linux, the JAR includes ERFA for `aarch64` and `x86_64`, so no system ERFA package is required. The loader extracts
+and loads ERFA before loading the JNI binding. On macOS, ERFA is still required at the path described above.
+
+To build the JAR without running the unit tests:
 
  1. `$> ./gradlew -i -x test clean build` -- build the JAR file and do not run the unit tests.
 
-Or in an environment where `ERFA` with a supported version (currently 2.0.0) is installed:
+To build the JAR and run the unit tests:
 
  1. `$> ./gradlew -i clean build test` -- build the JAR file and run the unit tests.
 

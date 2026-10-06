@@ -90,12 +90,16 @@ import org.apache.log4j.Logger;
  */
 public class ERFALib {
     private static final Logger log = Logger.getLogger(ERFALib.class);
+    private static final String JNI_FILE = "liberfaLibJNI";
+    private static final String ERFA_LIBRARY = "liberfa.1.8.1";
+    private static final String ERFA_LIBRARY_FILE = "liberfa.so.1.8.1";
 
     static {
         try {
-            NativeUtil.loadJNI(ERFALib.class.getClassLoader(), "liberfaLibJNI");
+            NativeUtil.loadJNI(
+                ERFALib.class.getClassLoader(), JNI_FILE, ERFA_LIBRARY, ERFA_LIBRARY_FILE);
         } catch (NativeInitializationException e) {
-            log.info("Checking library file liberfaLibJNI: FAIL");
+            log.info("Checking library file " + JNI_FILE + ": FAIL");
         }
     }
 

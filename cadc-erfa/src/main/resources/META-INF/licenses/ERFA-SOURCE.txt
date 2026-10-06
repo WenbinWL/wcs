@@ -1,0 +1,5 @@
+The bundled Linux shared libraries are unmodified binaries from the Fedora 42
+erfa-2.0.1-5.fc42 packages for aarch64 and x86_64.
+
+Upstream source: https://github.com/liberfa/erfa
+Fedora package: https://packages.fedoraproject.org/pkgs/erfa/erfa/

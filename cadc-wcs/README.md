@@ -2,8 +2,8 @@
 
 The `cadc-wcs` library is the java interface to `WCSLib` (http://www.atnf.csiro.au/people/mcalabre/WCS/).
 
-This library can be built on its own but testing and beyond requires `WCSLib`. The JNI binding library is
-compiled and included inside the `cadc-wcs` JAR file and deployed during class loading.
+The JNI binding and its WCSLib shared-library dependency are included inside the `cadc-wcs` JAR file for Linux and
+deployed during class loading. On macOS, WCSLib must be installed separately.
 
 ## Supported WCSLib versions
 
@@ -34,11 +34,14 @@ JDK 1.8 (or higher) is required.  The Gradle Wrapper is provided.
 
 ### No JNI changes
 
-To use `cadc-wcs`, the `WCSLib` C library is required.  If it is not installed, skip running the unit tests using the `-x test` option:
+On Linux, the JAR includes WCSLib 8.4 for `aarch64` and `x86_64`, so no system WCSLib package is required. The loader
+extracts and loads WCSLib before loading the JNI binding. On macOS, WCSLib is still required at the path described above.
+
+To build the JAR without running the unit tests:
 
  1. `$> ./gradlew -i -x test clean build` -- build the JAR file and do not run the unit tests.
 
-Or in an environment where `WCSLib` 8.x is installed:
+To build the JAR and run the unit tests:
 
  1. `$> ./gradlew -i clean build test` -- build the JAR file and run the unit tests.
 

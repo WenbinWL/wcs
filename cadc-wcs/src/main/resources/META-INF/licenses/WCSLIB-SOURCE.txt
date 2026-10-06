@@ -1,0 +1,5 @@
+The bundled Linux shared libraries are unmodified binaries from the Fedora 42
+wcslib-8.4-1.fc42 packages for aarch64 and x86_64.
+
+Upstream source: https://www.atnf.csiro.au/people/mcalabre/WCS/wcslib/
+Fedora package: https://packages.fedoraproject.org/pkgs/wcslib/wcslib/
