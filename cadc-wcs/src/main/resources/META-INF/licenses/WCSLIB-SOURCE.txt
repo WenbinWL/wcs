@@ -1,5 +1,10 @@
 The bundled Linux shared libraries are unmodified binaries from the Fedora 42
 wcslib-8.4-1.fc42 packages for aarch64 and x86_64.
 
+The bundled macOS arm64 shared library is from the Homebrew wcslib 8.10
+arm64_sequoia bottle. Its install name was changed to use @loader_path and the
+result was ad-hoc signed so it can be loaded alongside the JNI library.
+
 Upstream source: https://www.atnf.csiro.au/people/mcalabre/WCS/wcslib/
 Fedora package: https://packages.fedoraproject.org/pkgs/wcslib/wcslib/
+Homebrew formula: https://formulae.brew.sh/formula/wcslib

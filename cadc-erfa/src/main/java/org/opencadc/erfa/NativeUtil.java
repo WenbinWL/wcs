@@ -97,10 +97,14 @@ public class NativeUtil {
     private NativeUtil() {
     }
 
-    static void loadJNI(ClassLoader cl, String name, String dependencyName, String dependencyFileName)
+    static void loadJNI(ClassLoader cl, String name,
+                        String linuxDependencyName, String linuxDependencyFileName,
+                        String macDependencyName, String macDependencyFileName)
         throws NativeInitializationException {
         String architecture = normalizeArchitecture(System.getProperty("os.arch"));
         String resourceName = name + "." + architecture + EXTENSION;
+        String dependencyName = IS_MAC_OS ? macDependencyName : linuxDependencyName;
+        String dependencyFileName = IS_MAC_OS ? macDependencyFileName : linuxDependencyFileName;
         final UUID uuid = UUID.randomUUID();
         File parent = new File(System.getProperty("java.io.tmpdir"));
         File tmpdir = new File(parent, name + "-" + uuid);
@@ -112,11 +116,9 @@ public class NativeUtil {
             }
             tmpdir.deleteOnExit();
 
-            if (!IS_MAC_OS) {
-                String dependencyResource = dependencyName + "." + architecture + EXTENSION;
-                File dependency = extractResource(cl, dependencyResource, tmpdir, dependencyFileName);
-                loadLibrary(dependency, dependencyResource);
-            }
+            String dependencyResource = dependencyName + "." + architecture + EXTENSION;
+            File dependency = extractResource(cl, dependencyResource, tmpdir, dependencyFileName);
+            loadLibrary(dependency, dependencyResource);
 
             File jni = extractResource(cl, resourceName, tmpdir, name + EXTENSION);
             loadLibrary(jni, resourceName);

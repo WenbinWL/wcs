@@ -3,7 +3,7 @@
 The `cadc-wcs` library is the java interface to `WCSLib` (http://www.atnf.csiro.au/people/mcalabre/WCS/).
 
 The JNI binding and its WCSLib shared-library dependency are included inside the `cadc-wcs` JAR file for Linux and
-deployed during class loading. On macOS, WCSLib must be installed separately.
+macOS arm64 and deployed during class loading.
 
 ## Supported WCSLib versions
 
@@ -17,14 +17,8 @@ normalized Java architecture name (`aarch64` or `x86_64`) and the extension iden
 Linux and `dylib` on macOS). The loader selects only the resource matching the current operating system and architecture.
 The included `libwcsLibJNI.8.aarch64.so` was built on Ubuntu 24.04 arm64 against WCSLib 8.2.2.
 
-The src tree contains a macOS aarch64 build. This is expected to make life easier for
-developers working on code that uses this library and is compatible with MacOS versions 11.x, 12.x, and 13.x. If a 10.x version
-of the library is required, the library can be rebuilt following `With JNI changes` below. The new library,
-in `build/libs/wcsLibJNI/shared/` should be copied into `src/main/resources` to be included in the jar file.
-
-The macOS JNI library uses a hardcoded path to the locally installed WCSLib C library. The included aarch64 library uses
-`/opt/homebrew/opt/`. If the local WCSLib C library uses a different path, the JNI library can be rebuilt using
-`With JNI changes` below.
+The src tree contains macOS arm64 JNI and WCSLib builds. The JNI dependency uses `@loader_path`, so no system or
+Homebrew WCSLib installation is required at runtime. The bundled WCSLib 8.10 binary currently requires macOS 15 or later.
 
 ## Building & Testing
 
@@ -34,8 +28,8 @@ JDK 1.8 (or higher) is required.  The Gradle Wrapper is provided.
 
 ### No JNI changes
 
-On Linux, the JAR includes WCSLib 8.4 for `aarch64` and `x86_64`, so no system WCSLib package is required. The loader
-extracts and loads WCSLib before loading the JNI binding. On macOS, WCSLib is still required at the path described above.
+The JAR includes WCSLib 8.4 for Linux `aarch64` and `x86_64`, and WCSLib 8.10 for macOS arm64, so no system WCSLib
+package is required. The loader extracts and loads WCSLib before loading the JNI binding.
 
 To build the JAR without running the unit tests:
 

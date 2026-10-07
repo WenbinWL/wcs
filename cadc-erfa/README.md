@@ -4,7 +4,7 @@ The `cadc-erfa` library is the java interface to `ERFA (Essential Routines for F
 (https://github.com/liberfa/erfa).
 
 The JNI binding and its ERFA shared-library dependency are included inside the `cadc-erfa` JAR file for Linux and
-deployed during class loading. On macOS, ERFA must be installed separately.
+macOS arm64 and deployed during class loading.
 
 ## Supported ERFA versions
 
@@ -17,14 +17,8 @@ architecture name (`aarch64` or `x86_64`) and the extension identifies the opera
 macOS). The loader selects only the resource matching the current operating system and architecture. The included
 `liberfaLibJNI.aarch64.so` was built on Ubuntu 24.04 arm64 against ERFA 2.0.1.
 
-The src tree contains a macOS arm64 build. This is expected to make life easier for
-developers working on code that uses this library and and is compatible with MacOS versions 11.x, 12.x, and 13.x. 
-If a 10.x version of the library is required, the library can be rebuilt following `With JNI changes` below. 
-The new library, in `build/libs/erfaLibJNI/shared/` should be copied into `src/main/resources` to be included in the jar file.
-
-The macOS JNI library uses a hardcoded path to the locally installed ERFA C library. The included aarch64 library uses
-`/opt/homebrew/lib/`. If the local ERFA C library uses a different path, the JNI library can be rebuilt using
-`With JNI changes` below.
+The src tree contains macOS arm64 JNI and ERFA builds. The JNI dependency uses `@loader_path`, so no system or Homebrew
+ERFA installation is required at runtime. The bundled ERFA binary currently requires macOS 15 or later.
 
 
 
@@ -36,8 +30,8 @@ JDK 1.8 (or higher) is required.  The Gradle Wrapper is provided.
 
 ### No JNI changes
 
-On Linux, the JAR includes ERFA for `aarch64` and `x86_64`, so no system ERFA package is required. The loader extracts
-and loads ERFA before loading the JNI binding. On macOS, ERFA is still required at the path described above.
+The JAR includes ERFA for Linux `aarch64` and `x86_64`, and macOS arm64, so no system ERFA package is required. The
+loader extracts and loads ERFA before loading the JNI binding.
 
 To build the JAR without running the unit tests:
 
