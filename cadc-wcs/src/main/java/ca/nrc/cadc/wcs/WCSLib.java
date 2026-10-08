@@ -86,10 +86,8 @@ import org.apache.log4j.Logger;
 final class WCSLib {
     private static final Logger LOGGER = Logger.getLogger(WCSLib.class);
     private static final String JNI_FILE = "libwcsLibJNI.8";
-    private static final String LINUX_WCS_LIBRARY = "libwcs.8.4";
     private static final String LINUX_WCS_LIBRARY_FILE = "libwcs.so.8.4";
-    private static final String MAC_WCS_LIBRARY = "libwcs.8.10";
-    private static final String MAC_WCS_LIBRARY_FILE = "libwcs.8.dylib";
+    private static final String MAC_WCS_LIBRARY_FILE = "libwcs.8.10.dylib";
 
     static {
         LOGGER.info("Loaded WCSLib major version " + WCSLib.loadNativeLibrary());
@@ -114,8 +112,7 @@ final class WCSLib {
             LOGGER.info("Checking library file " + JNI_FILE);
             NativeUtil.loadJNI(
                 classLoader, JNI_FILE,
-                LINUX_WCS_LIBRARY, LINUX_WCS_LIBRARY_FILE,
-                MAC_WCS_LIBRARY, MAC_WCS_LIBRARY_FILE);
+                LINUX_WCS_LIBRARY_FILE, MAC_WCS_LIBRARY_FILE);
             LOGGER.info("Checking library file " + JNI_FILE + ": OK");
             return JNI_FILE;
         } catch (NativeInitializationException ex) {

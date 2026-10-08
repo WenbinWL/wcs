@@ -85,26 +85,39 @@ import org.apache.log4j.Logger;
 public class NativeUtil {
     private static final Logger log = Logger.getLogger(NativeUtil.class);
     private static final boolean IS_MAC_OS;
+    private static final String OPERATING_SYSTEM;
     private static final String EXTENSION;
 
-    // for OSX, use .dylib as the library filename extension
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         IS_MAC_OS = osName.startsWith("mac os x");
-        EXTENSION = IS_MAC_OS ? ".dylib" : ".so";
+        if (IS_MAC_OS) {
+            OPERATING_SYSTEM = "osx";
+            EXTENSION = ".dylib";
+        } else if (osName.startsWith("linux")) {
+            OPERATING_SYSTEM = "linux";
+            EXTENSION = ".so";
+        } else {
+            OPERATING_SYSTEM = null;
+            EXTENSION = null;
+        }
     }
 
     private NativeUtil() {
     }
 
     static void loadJNI(ClassLoader cl, String name,
-                        String linuxDependencyName, String linuxDependencyFileName,
-                        String macDependencyName, String macDependencyFileName)
+                        String linuxDependencyFileName, String macDependencyFileName)
         throws NativeInitializationException {
+        if (OPERATING_SYSTEM == null) {
+            throw new NativeInitializationException(
+                "unsupported operating system: " + System.getProperty("os.name"));
+        }
+
         String architecture = normalizeArchitecture(System.getProperty("os.arch"));
-        String resourceName = name + "." + architecture + EXTENSION;
-        String dependencyName = IS_MAC_OS ? macDependencyName : linuxDependencyName;
         String dependencyFileName = IS_MAC_OS ? macDependencyFileName : linuxDependencyFileName;
+        String resourceDirectory = OPERATING_SYSTEM + "/" + architecture + "/";
+        String jniFileName = name + EXTENSION;
         final UUID uuid = UUID.randomUUID();
         File parent = new File(System.getProperty("java.io.tmpdir"));
         File tmpdir = new File(parent, name + "-" + uuid);
@@ -116,12 +129,13 @@ public class NativeUtil {
             }
             tmpdir.deleteOnExit();
 
-            String dependencyResource = dependencyName + "." + architecture + EXTENSION;
+            String dependencyResource = resourceDirectory + dependencyFileName;
             File dependency = extractResource(cl, dependencyResource, tmpdir, dependencyFileName);
             loadLibrary(dependency, dependencyResource);
 
-            File jni = extractResource(cl, resourceName, tmpdir, name + EXTENSION);
-            loadLibrary(jni, resourceName);
+            String jniResource = resourceDirectory + jniFileName;
+            File jni = extractResource(cl, jniResource, tmpdir, jniFileName);
+            loadLibrary(jni, jniResource);
         } catch (IOException ex) {
             log.error("failed to extract shared library", ex);
             throw new NativeInitializationException(

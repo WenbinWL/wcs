@@ -8,14 +8,13 @@ macOS arm64 and deployed during class loading.
 
 ## Supported ERFA versions
 
-The JNI binary is linked against `ERFA` version 2.0.0. The `src/main/resources` directory includes the JNI linked library.
-To add support for a different version, build against that version of `ERFA`, and copy the JNI library to
-`src/main/resources/liberfaLibJNI.<architecture>.<extension>`.
+The JNI binary is linked against `ERFA` version 2.0.0. Native resources are organized under
+`src/main/resources/<os>/<architecture>/`, where `os` is `linux` or `osx` and the normalized Java architecture name is
+`aarch64` or `x86_64`. Each shared library retains its native filename. To replace a supported ERFA version, put the
+ERFA and JNI libraries in the corresponding directory and update the filenames in `ERFALib.java`.
 
-JNI libraries use the filename `liberfaLibJNI.<architecture>.<extension>`, where the architecture is the normalized Java
-architecture name (`aarch64` or `x86_64`) and the extension identifies the operating system (`so` on Linux and `dylib` on
-macOS). The loader selects only the resource matching the current operating system and architecture. The included
-`liberfaLibJNI.aarch64.so` was built on Ubuntu 24.04 arm64 against ERFA 2.0.1.
+The loader selects the directory matching the current operating system and architecture. The included
+`linux/aarch64/liberfaLibJNI.so` was built on Ubuntu 24.04 arm64 against ERFA 2.0.1.
 
 The src tree contains macOS arm64 JNI and ERFA builds. The JNI dependency uses `@loader_path`, so no system or Homebrew
 ERFA installation is required at runtime. The bundled ERFA binary currently requires macOS 15 or later.
